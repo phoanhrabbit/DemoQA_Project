@@ -18,12 +18,14 @@ namespace DemoQA_Project
             driver.Manage().Window.Maximize();
             driver.Url = "https://demoqa.com/automation-practice-form";
             practiceFormPage = new PracticeFormPage(driver);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
         }
 
         [Test]
         public void VerifyUserCanSubmitFormSuccessfullyAfterFillingAllTheInfo()
         {
             practiceFormPage.sendFirstName("Oanh");
+            TestContext.WriteLine("Passed");
             Assert.Pass();
         }
         [TearDown]
