@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -30,20 +31,21 @@ namespace DemoQA_Project.Page
         //Month field
         private IWebElement monthField => driver.FindElement(By.XPath("//option[text()='September']"));
         //Date field
-        private IWebElement dateField => driver.FindElement(By.XPath("//div[@class='react-datepicker__week'][7]"));
+        private IWebElement dateField => driver.FindElement(By.CssSelector("div[aria-label='Choose Sunday, September 5th, 1999']"));
         private IWebElement subjectField => driver.FindElement(By.XPath("//input[@id='subjectsInput']"));
-        // option Sports
-        private IWebElement hobbiesSportsField => driver.FindElement(By.CssSelector("#hobbies-checkbox-1"));
-        // option Music
-        private IWebElement hobbiesMusicField => driver.FindElement(By.CssSelector("#hobbies-checkbox-3"));
+        // option Reading
+        private IWebElement hobbiesReadingField => driver.FindElement(By.XPath("(//div[@class='custom-control custom-checkbox custom-control-inline'])[1]"));
         private IWebElement FileField => driver.FindElement(By.CssSelector("#uploadPicture"));
         private IWebElement currentAddressField => driver.FindElement(By.CssSelector("#currentAddress"));
+        //private IWebElement dropdownStateField => driver.FindElement(By.Id("state"));
+        private IWebElement dropdownStateField => driver.FindElement(By.XPath("(//div[@class=' css-1hwfws3'])[1]"));
+
 
 
 
 
         #endregion
-        public void FillOutInformation(string firstName, string lastName, string subject)
+        public void FillOutInformation(string firstName, string lastName, string subject, string address)
         {
             // enter first name + last name
             firstNameField.SendKeys(firstName);
@@ -53,22 +55,38 @@ namespace DemoQA_Project.Page
             yearField.Click();
             monthField.Click();
             dateField.Click();
-            //click out the date time picker
-            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            js.ExecuteScript("document.body.click();");
             //enter subject
             subjectField.SendKeys(subject);
+            subjectField.SendKeys(Keys.Enter);
+            //scroll down to bottom
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            js.ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
             //select hobbies
-            hobbiesSportsField.Click();
-            hobbiesMusicField.Click();
+            WaitForElementToBeClicked(driver, hobbiesReadingField);
+            hobbiesReadingField.Click();
             //upload file
-            FileField.SendKeys(Environment.CurrentDirectory.Replace(@"\", @"/") + "/File/File/auto.png");
+            FileField.SendKeys(Environment.CurrentDirectory.Replace(@"\", @"/") + "/File/auto.png");
             //enter address
+            currentAddressField.SendKeys(address);
+            //select from dropdown state
+            dropdownStateField.Click();
+            SelectElement selectedOption = new SelectElement(dropdownStateField);
+            selectedOption.SelectByIndex(1);
 
 
 
-            Thread.Sleep(30000);
-
+        }
+        public IWebElement WaitForElementToBeClicked(IWebDriver driver,IWebElement element)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                return wait.Until(ExpectedConditions.ElementToBeClickable(element));
+            }
+            catch (NoSuchElementException ex) 
+            {
+                throw new Exception($"The {element} is not clickable. Please try again!");
+            }
         }
     }
 }

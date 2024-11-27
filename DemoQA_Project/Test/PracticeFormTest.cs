@@ -9,12 +9,12 @@ namespace DemoQA_Project
     public class PracticeFormTest: BasePage
     {
 
-        [TestCase("Oanh", "Nguyen", "Math")]
-        public void VerifyUserCanSubmitFormSuccessfullyAfterFillingAllTheInfo(string FirstName, string LastName, string Subject)
+        [TestCase("Oanh", "Nguyen", "Math", "21 Le Thi Hong")]
+        public void VerifyUserCanSubmitFormSuccessfullyAfterFillingAllTheInfo(string FirstName, string LastName, string Subject, string Address)
         {
             driver.Navigate().GoToUrl("https://demoqa.com/automation-practice-form");
             var practiceFormPage = new PracticeFormPage(driver);
-            practiceFormPage.FillOutInformation(FirstName, LastName, Subject);
+            practiceFormPage.FillOutInformation(FirstName, LastName, Subject, Address);
             TestContext.WriteLine("Passed");
             Assert.Pass();
         }
