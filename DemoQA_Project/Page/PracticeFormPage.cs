@@ -43,13 +43,16 @@ namespace DemoQA_Project.Page
         private IWebElement dropdownCityOption => driver.FindElement(By.XPath("//div[text()='Delhi']"));
         private IWebElement submitButton => driver.FindElement(By.CssSelector("#submit"));
         private IWebElement SuccessMessage => driver.FindElement(By.CssSelector("#example-modal-sizes-title-lg"));
-
-
-
-
-
-
         #endregion
+        /// <summary>
+        ///  Fill all the information of the form
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <param name="email"></param>
+        /// <param name="mobile"></param>
+        /// <param name="subject"></param>
+        /// <param name="address"></param>
         public void FillOutInformation(string firstName, string lastName, string email, string mobile, string subject, string address)
         {
             // enter first name + last name
@@ -73,7 +76,6 @@ namespace DemoQA_Project.Page
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             js.ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
             //select hobbies
-            WaitForElementToBeClicked(driver, hobbiesReadingField);
             hobbiesReadingField.Click();
             //upload file
             FileField.SendKeys(Environment.CurrentDirectory.Replace(@"\", @"/") + "/File/auto.png");
@@ -88,7 +90,14 @@ namespace DemoQA_Project.Page
             //Click submit button
             submitButton.Click();
         }
+        /// <summary>
+        /// Get the error color of the mobile number field
+        /// </summary>
         public string GetColorErrorMobileField => mobileField.GetCssValue("color");
+        /// <summary>
+        /// Get the text of the success message when submit the form successfully
+        /// </summary>
+        /// <returns></returns>
         public string GetSuccessMessage() => SuccessMessage.Text;
     }
 }
