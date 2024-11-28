@@ -90,41 +90,5 @@ namespace DemoQA_Project.Page
         }
         public string GetColorErrorMobileField => mobileField.GetCssValue("color");
         public string GetSuccessMessage() => SuccessMessage.Text;
-        public bool IsElementPresent(By element, int waitTime)
-        {
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(waitTime);
-            var isPresent = driver.FindElement(element).Displayed;
-            return true;
-        }
-        public IWebElement WaitForElementToBeClicked(IWebDriver driver, IWebElement element)
-        {
-            try
-            {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                return wait.Until(ExpectedConditions.ElementToBeClickable(element));
-            }
-            catch (NoSuchElementException ex)
-            {
-                throw new Exception($"The {element} is not clickable. Please try again!");
-            }
-        }
-        /// <summary>
-        /// Get all elements from dropdown list
-        /// </summary>
-        /// <param name="element"></param>
-        /// <returns></returns>
-        public List<string> GetAllItemsDropDown(IWebElement element)
-        {
-            List<string> dropdownItems = new List<string>();
-            var select = new SelectElement(element).Options;
-            select.ToList().ForEach(x => dropdownItems.Add(x.Text));
-            return dropdownItems;
-        }
-        public void SelectInDropDown(IWebElement element, string option)
-        {
-            var options = element.FindElements(By.XPath("child::*"));
-            var webElement = options.FirstOrDefault(p => p.Equals(option));
-            element.Click();
-        }
     }
 }
