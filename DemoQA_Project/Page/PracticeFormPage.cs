@@ -11,7 +11,7 @@ namespace DemoQA_Project.Page
 {
     public class PracticeFormPage
     {
-        private IWebDriver driver;
+        private IWebDriver driver;       
         //constructor
         public PracticeFormPage(IWebDriver driver)
         {
@@ -37,19 +37,30 @@ namespace DemoQA_Project.Page
         private IWebElement hobbiesReadingField => driver.FindElement(By.XPath("(//div[@class='custom-control custom-checkbox custom-control-inline'])[1]"));
         private IWebElement FileField => driver.FindElement(By.CssSelector("#uploadPicture"));
         private IWebElement currentAddressField => driver.FindElement(By.CssSelector("#currentAddress"));
-        //private IWebElement dropdownStateField => driver.FindElement(By.Id("state"));
         private IWebElement dropdownStateField => driver.FindElement(By.XPath("(//div[@class=' css-1hwfws3'])[1]"));
+        private IWebElement dropdownStateOption => driver.FindElement(By.XPath("//div[text()='NCR']"));
+        private IWebElement dropdownCityField => driver.FindElement(By.XPath("(//div[@class=' css-1wa3eu0-placeholder'])[1]"));
+        private IWebElement dropdownCityOption => driver.FindElement(By.XPath("//div[text()='Delhi']"));
+        private IWebElement submitButton => driver.FindElement(By.CssSelector("#submit"));
+        private IWebElement SuccessMessage => driver.FindElement(By.CssSelector("#example-modal-sizes-title-lg"));
+
 
 
 
 
 
         #endregion
-        public void FillOutInformation(string firstName, string lastName, string subject, string address)
+        public void FillOutInformation(string firstName, string lastName, string email, string mobile, string subject, string address)
         {
             // enter first name + last name
             firstNameField.SendKeys(firstName);
             lastNameField.SendKeys(lastName);
+            // enter email
+            emailField.SendKeys(email);
+            // select gender
+            genderField.Click();
+            // enter mobile
+            mobileField.SendKeys(mobile);
             // select date of birth
             dateOfBirthField.Click();
             yearField.Click();
@@ -68,25 +79,52 @@ namespace DemoQA_Project.Page
             FileField.SendKeys(Environment.CurrentDirectory.Replace(@"\", @"/") + "/File/auto.png");
             //enter address
             currentAddressField.SendKeys(address);
-            //select from dropdown state
+            //select from state dropdown 
             dropdownStateField.Click();
-            SelectElement selectedOption = new SelectElement(dropdownStateField);
-            selectedOption.SelectByIndex(1);
-
-
-
+            dropdownStateOption.Click();
+            //select from city dropdown 
+            dropdownCityField.Click();
+            dropdownCityOption.Click();
+            //Click submit button
+            submitButton.Click();
         }
-        public IWebElement WaitForElementToBeClicked(IWebDriver driver,IWebElement element)
+        public string GetColorErrorMobileField => mobileField.GetCssValue("color");
+        public string GetSuccessMessage() => SuccessMessage.Text;
+        public bool IsElementPresent(By element, int waitTime)
+        {
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(waitTime);
+            var isPresent = driver.FindElement(element).Displayed;
+            return true;
+        }
+        public IWebElement WaitForElementToBeClicked(IWebDriver driver, IWebElement element)
         {
             try
             {
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 return wait.Until(ExpectedConditions.ElementToBeClickable(element));
             }
-            catch (NoSuchElementException ex) 
+            catch (NoSuchElementException ex)
             {
                 throw new Exception($"The {element} is not clickable. Please try again!");
             }
+        }
+        /// <summary>
+        /// Get all elements from dropdown list
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public List<string> GetAllItemsDropDown(IWebElement element)
+        {
+            List<string> dropdownItems = new List<string>();
+            var select = new SelectElement(element).Options;
+            select.ToList().ForEach(x => dropdownItems.Add(x.Text));
+            return dropdownItems;
+        }
+        public void SelectInDropDown(IWebElement element, string option)
+        {
+            var options = element.FindElements(By.XPath("child::*"));
+            var webElement = options.FirstOrDefault(p => p.Equals(option));
+            element.Click();
         }
     }
 }
