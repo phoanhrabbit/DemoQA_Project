@@ -1,9 +1,5 @@
 ﻿using DemoQA_Project.Page;
 using FluentAssertions;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using System.Runtime.Serialization;
-using WebDriverManager.DriverConfigs.Impl;
 
 namespace DemoQA_Project
 {
